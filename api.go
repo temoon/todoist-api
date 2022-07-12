@@ -37,6 +37,9 @@ func New(opts *Opts) *Todoist {
 }
 
 func (t *Todoist) request(ctx context.Context, method string, endpoint string, params map[string]string, payload io.Reader, data interface{}) (err error) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
 	var req *http.Request
 	if req, err = http.NewRequestWithContext(ctx, method, BaseUrl+endpoint, payload); err != nil {
 		return

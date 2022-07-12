@@ -67,16 +67,16 @@ func (t *Todoist) AddProjects(ctx context.Context, name string, parentId int, co
 	return
 }
 
-func (t *Todoist) GetProject(ctx context.Context, id int) (project *Project, err error) {
+func (t *Todoist) GetProject(ctx context.Context, projectId int) (project *Project, err error) {
 	project = new(Project)
-	if err = t.request(ctx, http.MethodGet, ProjectsEndpoint+"/"+strconv.Itoa(id), nil, nil, project); err != nil {
+	if err = t.request(ctx, http.MethodGet, ProjectsEndpoint+"/"+strconv.Itoa(projectId), nil, nil, project); err != nil {
 		return
 	}
 
 	return
 }
 
-func (t *Todoist) UpdateProject(ctx context.Context, id int, name string, color int, favorite bool) (err error) {
+func (t *Todoist) UpdateProject(ctx context.Context, projectId int, name string, color int, favorite bool) (err error) {
 	params := map[string]interface{}{
 		"name":     name,
 		"favorite": favorite,
@@ -91,24 +91,24 @@ func (t *Todoist) UpdateProject(ctx context.Context, id int, name string, color 
 		return
 	}
 
-	if err = t.request(ctx, http.MethodPost, ProjectsEndpoint+"/"+strconv.Itoa(id), nil, bytes.NewBuffer(payload), nil); err != nil {
+	if err = t.request(ctx, http.MethodPost, ProjectsEndpoint+"/"+strconv.Itoa(projectId), nil, bytes.NewBuffer(payload), nil); err != nil {
 		return
 	}
 
 	return
 }
 
-func (t *Todoist) DeleteProject(ctx context.Context, id int) (err error) {
-	if err = t.request(ctx, http.MethodDelete, ProjectsEndpoint+"/"+strconv.Itoa(id), nil, nil, nil); err != nil {
+func (t *Todoist) DeleteProject(ctx context.Context, projectId int) (err error) {
+	if err = t.request(ctx, http.MethodDelete, ProjectsEndpoint+"/"+strconv.Itoa(projectId), nil, nil, nil); err != nil {
 		return
 	}
 
 	return
 }
 
-func (t *Todoist) GetCollaborators(ctx context.Context, id int) (collaborators []Collaborator, err error) {
+func (t *Todoist) GetCollaborators(ctx context.Context, projectId int) (collaborators []Collaborator, err error) {
 	collaborators = make([]Collaborator, 0)
-	if err = t.request(ctx, http.MethodGet, ProjectsEndpoint+"/"+strconv.Itoa(id)+"/collaborators", nil, nil, &collaborators); err != nil {
+	if err = t.request(ctx, http.MethodGet, ProjectsEndpoint+"/"+strconv.Itoa(projectId)+"/collaborators", nil, nil, &collaborators); err != nil {
 		return
 	}
 
