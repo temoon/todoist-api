@@ -23,6 +23,10 @@ type Opts struct {
 
 //goland:noinspection GoUnusedExportedFunction
 func New(opts *Opts) *Todoist {
+	if opts.Timeout == 0 {
+		opts.Timeout = 15 * time.Second
+	}
+
 	if opts.Client == nil {
 		opts.Client = &http.Client{
 			Timeout: opts.Timeout,
