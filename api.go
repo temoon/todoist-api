@@ -6,14 +6,12 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	"sync"
 	"time"
 )
 
 const BaseUrl = "https://api.todoist.com/rest/v1/"
 
 type Todoist struct {
-	mu   sync.Mutex
 	opts *Opts
 }
 
@@ -37,9 +35,6 @@ func New(opts *Opts) *Todoist {
 }
 
 func (t *Todoist) request(ctx context.Context, method string, endpoint string, params map[string]string, payload io.Reader, data interface{}) (err error) {
-	t.mu.Lock()
-	defer t.mu.Unlock()
-
 	var req *http.Request
 	if req, err = http.NewRequestWithContext(ctx, method, BaseUrl+endpoint, payload); err != nil {
 		return
@@ -50,7 +45,7 @@ func (t *Todoist) request(ctx context.Context, method string, endpoint string, p
 		req.Header.Set("Content-Type", "application/json")
 	}
 
-	if params != nil {
+	if params != nil && len(params) != 0 {
 		query := req.URL.Query()
 		for key, value := range params {
 			query.Set(key, value)
