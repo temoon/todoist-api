@@ -31,6 +31,8 @@ type Collaborator struct {
 	Email string `json:"email"`
 }
 
+// region GetProjects
+
 func (t *Todoist) GetProjects(ctx context.Context) (projects []Project, err error) {
 	projects = make([]Project, 0)
 	err = t.request(ctx, http.MethodGet, ProjectsEndpoint, nil, nil, &projects)
@@ -38,7 +40,17 @@ func (t *Todoist) GetProjects(ctx context.Context) (projects []Project, err erro
 	return
 }
 
+// endregion
+
+// region AddProject
+
 type AddProjectParams map[string]interface{}
+
+//goland:noinspection GoUnusedExportedFunction
+func MakeAddProjectParams() *AddProjectParams {
+	params := make(AddProjectParams)
+	return &params
+}
 
 func (p *AddProjectParams) WithName(name string) *AddProjectParams {
 	if name != "" {
@@ -81,6 +93,10 @@ func (t *Todoist) AddProject(ctx context.Context, params *AddProjectParams) (pro
 	return
 }
 
+// endregion
+
+// region GetProject
+
 func (t *Todoist) GetProject(ctx context.Context, projectId int) (project *Project, err error) {
 	project = new(Project)
 	err = t.request(ctx, http.MethodGet, ProjectsEndpoint+"/"+strconv.Itoa(projectId), nil, nil, project)
@@ -88,7 +104,17 @@ func (t *Todoist) GetProject(ctx context.Context, projectId int) (project *Proje
 	return
 }
 
+// endregion
+
+// region UpdateProject
+
 type UpdateProjectParams map[string]interface{}
+
+//goland:noinspection GoUnusedExportedFunction
+func MakeUpdateProjectParams() *UpdateProjectParams {
+	params := make(UpdateProjectParams)
+	return &params
+}
 
 func (p *UpdateProjectParams) WithName(name string) *UpdateProjectParams {
 	if name != "" {
@@ -120,9 +146,17 @@ func (t *Todoist) UpdateProject(ctx context.Context, projectId int, params *Upda
 	return t.request(ctx, http.MethodPost, ProjectsEndpoint+"/"+strconv.Itoa(projectId), nil, bytes.NewBuffer(payload), nil)
 }
 
+// endregion
+
+// region DeleteProject
+
 func (t *Todoist) DeleteProject(ctx context.Context, projectId int) (err error) {
 	return t.request(ctx, http.MethodDelete, ProjectsEndpoint+"/"+strconv.Itoa(projectId), nil, nil, nil)
 }
+
+// endregion
+
+// region GetCollaborators
 
 func (t *Todoist) GetCollaborators(ctx context.Context, projectId int) (collaborators []Collaborator, err error) {
 	collaborators = make([]Collaborator, 0)
@@ -130,3 +164,5 @@ func (t *Todoist) GetCollaborators(ctx context.Context, projectId int) (collabor
 
 	return
 }
+
+// endregion

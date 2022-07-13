@@ -18,6 +18,8 @@ type Label struct {
 	Favorite bool   `json:"favorite"`
 }
 
+// region GetLabels
+
 func (t *Todoist) GetLabels(ctx context.Context) (labels []Label, err error) {
 	labels = make([]Label, 0)
 	err = t.request(ctx, http.MethodGet, LabelsEndpoint, nil, nil, &labels)
@@ -25,7 +27,17 @@ func (t *Todoist) GetLabels(ctx context.Context) (labels []Label, err error) {
 	return
 }
 
+// endregion
+
+// region AddLabel
+
 type AddLabelParams map[string]interface{}
+
+//goland:noinspection GoUnusedExportedFunction
+func MakeAddLabelParams() *AddLabelParams {
+	params := make(AddLabelParams)
+	return &params
+}
 
 func (p *AddLabelParams) WithName(name string) *AddLabelParams {
 	if name != "" {
@@ -68,6 +80,10 @@ func (t *Todoist) AddLabel(ctx context.Context, params *AddLabelParams) (label *
 	return
 }
 
+// endregion
+
+// region GetLabel
+
 func (t *Todoist) GetLabel(ctx context.Context, labelId int) (label *Label, err error) {
 	label = new(Label)
 	err = t.request(ctx, http.MethodGet, LabelsEndpoint+"/"+strconv.Itoa(labelId), nil, nil, label)
@@ -75,7 +91,17 @@ func (t *Todoist) GetLabel(ctx context.Context, labelId int) (label *Label, err 
 	return
 }
 
+// endregion
+
+// region UpdateLabel
+
 type UpdateLabelParams map[string]interface{}
+
+//goland:noinspection GoUnusedExportedFunction
+func MakeUpdateLabelParams() *UpdateLabelParams {
+	params := make(UpdateLabelParams)
+	return &params
+}
 
 func (p *UpdateLabelParams) WithName(name string) *UpdateLabelParams {
 	if name != "" {
@@ -115,6 +141,12 @@ func (t *Todoist) UpdateLabel(ctx context.Context, labelId int, params *UpdateLa
 	return t.request(ctx, http.MethodPost, LabelsEndpoint+"/"+strconv.Itoa(labelId), nil, bytes.NewBuffer(payload), nil)
 }
 
+// endregion
+
+// region DeleteLabel
+
 func (t *Todoist) DeleteLabel(ctx context.Context, labelId int) (err error) {
 	return t.request(ctx, http.MethodDelete, LabelsEndpoint+"/"+strconv.Itoa(labelId), nil, nil, nil)
 }
+
+// endregion

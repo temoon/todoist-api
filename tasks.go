@@ -37,7 +37,15 @@ type Due struct {
 	Timezone  string `json:"timezone"`
 }
 
+// region GetTasks
+
 type GetTasksParams map[string]string
+
+//goland:noinspection GoUnusedExportedFunction
+func MakeGetTasksParams() *GetTasksParams {
+	params := make(GetTasksParams)
+	return &params
+}
 
 func (p *GetTasksParams) WithProjectId(projectId int) *GetTasksParams {
 	if projectId != 0 {
@@ -101,7 +109,17 @@ func (t *Todoist) GetTasks(ctx context.Context, params *GetTasksParams) (tasks [
 	return
 }
 
+// endregion
+
+// region AddTask
+
 type AddTaskParams map[string]interface{}
+
+//goland:noinspection GoUnusedExportedFunction
+func MakeAddTaskParams() *AddTaskParams {
+	params := make(AddTaskParams)
+	return &params
+}
 
 func (p *AddTaskParams) WithContent(content string) *AddTaskParams {
 	if content != "" {
@@ -219,6 +237,10 @@ func (t *Todoist) AddTask(ctx context.Context, params *AddTaskParams) (task *Tas
 	return
 }
 
+// endregion
+
+// region GetTask
+
 func (t *Todoist) GetTask(ctx context.Context, taskId int) (task *Task, err error) {
 	task = new(Task)
 	err = t.request(ctx, http.MethodGet, TasksEndpoint+"/"+strconv.Itoa(taskId), nil, nil, task)
@@ -226,7 +248,17 @@ func (t *Todoist) GetTask(ctx context.Context, taskId int) (task *Task, err erro
 	return
 }
 
+// endregion
+
+// region UpdateTask
+
 type UpdateTaskParams map[string]interface{}
+
+//goland:noinspection GoUnusedExportedFunction
+func MakeUpdateTaskParams() *UpdateTaskParams {
+	params := make(UpdateTaskParams)
+	return &params
+}
 
 func (p *UpdateTaskParams) WithContent(content string) *UpdateTaskParams {
 	if content != "" {
@@ -309,14 +341,28 @@ func (t *Todoist) UpdateTask(ctx context.Context, taskId int, params *UpdateTask
 	return t.request(ctx, http.MethodPost, TasksEndpoint+"/"+strconv.Itoa(taskId), nil, bytes.NewBuffer(payload), nil)
 }
 
+// endregion
+
+// region CloseTask
+
 func (t *Todoist) CloseTask(ctx context.Context, taskId int) (err error) {
 	return t.request(ctx, http.MethodPost, TasksEndpoint+"/"+strconv.Itoa(taskId)+"/close", nil, nil, nil)
 }
+
+// endregion
+
+// region ReopenTask
 
 func (t *Todoist) ReopenTask(ctx context.Context, taskId int) (err error) {
 	return t.request(ctx, http.MethodPost, TasksEndpoint+"/"+strconv.Itoa(taskId)+"/reopen", nil, nil, nil)
 }
 
+// endregion
+
+// region DeleteTask
+
 func (t *Todoist) DeleteTask(ctx context.Context, taskId int) (err error) {
 	return t.request(ctx, http.MethodDelete, TasksEndpoint+"/"+strconv.Itoa(taskId), nil, nil, nil)
 }
+
+// endregion

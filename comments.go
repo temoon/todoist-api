@@ -42,7 +42,15 @@ type AudioAttachment struct {
 	FileDuration int `json:"file_duration"`
 }
 
+// region GetComments
+
 type GetCommentsParams map[string]string
+
+//goland:noinspection GoUnusedExportedFunction
+func MakeGetCommentsParams() *GetCommentsParams {
+	params := make(GetCommentsParams)
+	return &params
+}
 
 func (p *GetCommentsParams) WithProjectId(projectId int) *GetCommentsParams {
 	if projectId != 0 {
@@ -67,7 +75,17 @@ func (t *Todoist) GetComments(ctx context.Context, params *GetCommentsParams) (s
 	return
 }
 
+// endregion
+
+// region AddComment
+
 type AddCommentParams map[string]interface{}
+
+//goland:noinspection GoUnusedExportedFunction
+func MakeAddCommentParams() *AddCommentParams {
+	params := make(AddCommentParams)
+	return &params
+}
 
 func (p *AddCommentParams) WithTaskId(taskId int) *AddCommentParams {
 	if taskId != 0 {
@@ -113,6 +131,10 @@ func (t *Todoist) AddComment(ctx context.Context, params *AddCommentParams) (com
 	return
 }
 
+// endregion
+
+// region GetComment
+
 func (t *Todoist) GetComment(ctx context.Context, commentId int) (comment *Comment, err error) {
 	comment = new(Comment)
 	err = t.request(ctx, http.MethodGet, CommentsEndpoint+"/"+strconv.Itoa(commentId), nil, nil, comment)
@@ -120,7 +142,17 @@ func (t *Todoist) GetComment(ctx context.Context, commentId int) (comment *Comme
 	return
 }
 
+// endregion
+
+// region UpdateComment
+
 type UpdateCommentParams map[string]interface{}
+
+//goland:noinspection GoUnusedExportedFunction
+func MakeUpdateCommentParams() *UpdateCommentParams {
+	params := make(UpdateCommentParams)
+	return &params
+}
 
 func (p *UpdateCommentParams) WithContent(content string) *UpdateCommentParams {
 	if content != "" {
@@ -139,6 +171,12 @@ func (t *Todoist) UpdateComment(ctx context.Context, commentId int, params *Upda
 	return t.request(ctx, http.MethodPost, CommentsEndpoint+"/"+strconv.Itoa(commentId), nil, bytes.NewBuffer(payload), nil)
 }
 
+// endregion
+
+// region DeleteComment
+
 func (t *Todoist) DeleteComment(ctx context.Context, commentId int) (err error) {
 	return t.request(ctx, http.MethodDelete, CommentsEndpoint+"/"+strconv.Itoa(commentId), nil, nil, nil)
 }
+
+// endregion
