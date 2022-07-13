@@ -17,9 +17,19 @@ type Section struct {
 	Name      string `json:"name"`
 }
 
-func (t *Todoist) GetSections(ctx context.Context, projectId int) (sections []Section, err error) {
+type GetSectionsParams map[string]string
+
+func (p *GetSectionsParams) WithProjectId(projectId int) *GetSectionsParams {
+	if projectId != 0 {
+		(*p)["project_id"] = strconv.Itoa(projectId)
+	}
+
+	return p
+}
+
+func (t *Todoist) GetSections(ctx context.Context, params *GetSectionsParams) (sections []Section, err error) {
 	sections = make([]Section, 0)
-	err = t.request(ctx, http.MethodGet, SectionsEndpoint, map[string]string{"project_id": strconv.Itoa(projectId)}, nil, &sections)
+	err = t.request(ctx, http.MethodGet, SectionsEndpoint, *params, nil, &sections)
 
 	return
 }
